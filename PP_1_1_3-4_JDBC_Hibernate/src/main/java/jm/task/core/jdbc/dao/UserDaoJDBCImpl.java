@@ -21,6 +21,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     Connection connection = getConnection();
     PreparedStatement ps = null;
 
+
     public void createUsersTable() throws SQLException {
 
         try {
@@ -120,6 +121,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         }
     }
 
+
     public void removeUserById(long id) {
 
         try {
@@ -149,6 +151,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             }
         }
     }
+
 
     public List<User> getAllUsers() {
 
@@ -188,6 +191,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         }
         return users;
     }
+
 
     public void cleanUsersTable() {
 
