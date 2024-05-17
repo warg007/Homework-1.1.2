@@ -12,152 +12,74 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class UserDaoJDBCImpl extends Util implements UserDao {
+public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
-
     }
 
     Logger logger = Logger.getLogger(UserDaoJDBCImpl.class.getName());
-    Connection connection = getConnection();
+    private final Util util = new Util();
     PreparedStatement ps = null;
 
-    public void createUsersTable() throws SQLException {
+    public void createUsersTable() {
 
-        try {
+        try (Connection conn = util.getConnection()) {
             String sql = "CREATE TABLE IF NOT EXISTS users " +
                     "(Id INT PRIMARY KEY AUTO_INCREMENT," +
                     " Name VARCHAR(20)," +
                     " lastName VARCHAR(20)," +
                     " Age INT);";
-            Connection connection = getConnection();
-            ps = connection.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-
-            }
+            logger.warning("Error creating users table: " + e.getMessage());
         }
     }
 
 
     public void dropUsersTable() {
 
-        try {
+        try (Connection conn = util.getConnection()) {
             String sql = "DROP TABLE IF EXISTS users";
-            Connection connection = getConnection();
-            ps = connection.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-
-            }
+            logger.warning("Error dropping users table: " + e.getMessage());
         }
-
     }
 
 
     public void saveUser(String name, String lastName, byte age) {
 
-        try {
+        try (Connection conn = util.getConnection()) {
             String sql = "INSERT INTO USERS (NAME, LASTNAME, AGE) VALUES (?, ?, ?)";
-            Connection connection = getConnection();
-            ps = connection.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.setString(1, name);
             ps.setString(2, lastName);
             ps.setInt(3, age);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
+            logger.warning("Error saving user: " + e.getMessage());
         }
     }
 
     public void removeUserById(long id) {
 
-        try {
+        try (Connection conn = util.getConnection()) {
             String sql = "DELETE FROM users WHERE id = ?";
-            Connection connection = getConnection();
-            ps = connection.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, (int) id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
+            logger.warning("Error deleting user with id: " + id + e.getMessage());
         }
     }
 
     public List<User> getAllUsers() {
 
         List<User> users = new ArrayList<>();
-        try {
-            Connection connection = getConnection();
-            Statement statement = connection.createStatement();
+        try (Connection conn = util.getConnection()) {
+            Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM users");
-
             while (rs.next()) {
                 User user = new User();
                 user.setId(rs.getLong("id"));
@@ -167,54 +89,19 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
                 users.add(user);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
+            logger.warning("Error getting all users: " + e.getMessage());
         }
         return users;
     }
 
     public void cleanUsersTable() {
 
-        try {
+        try (Connection conn = util.getConnection()) {
             String sql = "DELETE FROM users";
-            Connection connection = getConnection();
-            ps = connection.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.warning("Failed to close prepared statement");
-                    logger.warning(e.getMessage());
-                }
-            }
+            logger.warning("Error cleaning users table: " + e.getMessage());
         }
     }
 }
