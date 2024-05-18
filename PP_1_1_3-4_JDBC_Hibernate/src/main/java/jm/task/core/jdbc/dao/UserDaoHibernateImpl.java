@@ -4,7 +4,7 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+
 import org.hibernate.Transaction;
 
 
@@ -35,7 +35,6 @@ public class UserDaoHibernateImpl implements UserDao {
                 tx.rollback();
             }
         }
-
     }
 
 
@@ -83,7 +82,6 @@ public class UserDaoHibernateImpl implements UserDao {
                 tx.rollback();
             }
         }
-
     }
 
 
@@ -105,9 +103,9 @@ public class UserDaoHibernateImpl implements UserDao {
         return users;
     }
 
+
     @Override
     public void cleanUsersTable() {
-
         Transaction tx = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
